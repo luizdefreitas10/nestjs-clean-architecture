@@ -39,3 +39,14 @@ lerna-debug.log*
 
 # DOCKER 
 data
+
+# PUBLIC AND PRIVATE JWT KEYS 
+private_key-base64.txt
+public_key-base64.txt
+public_key.pem
+private_key.pem
+
+
+# ENV TS
+
+/src/env.ts
