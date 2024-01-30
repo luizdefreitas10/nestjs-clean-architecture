@@ -10,4 +10,7 @@
   "[javascript]": {
     "editor.defaultFormatter": null
   },
+  "[prisma]": {
+    "editor.formatOnSave": true
+  },
 }
