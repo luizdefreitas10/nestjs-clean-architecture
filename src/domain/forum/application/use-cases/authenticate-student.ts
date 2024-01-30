@@ -16,7 +16,7 @@ type AuthenticateStudentUseCaseResponse = Either<
   {
     accessToken: string
   }
->
+> 
 
 @Injectable()
 export class AuthenticateStudentUseCase {
@@ -32,8 +32,6 @@ export class AuthenticateStudentUseCase {
   }: AuthenticateStudentUseCaseRequest): Promise<AuthenticateStudentUseCaseResponse> {
     const student = await this.studentsRepository.findByEmail(email)
 
-    console.log(student)
-
     if (!student) {
       return left(new WrongCredentialsError())
     }
@@ -43,8 +41,6 @@ export class AuthenticateStudentUseCase {
       student.password,
     )
 
-    console.log(isPasswordValid)
-
     if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }
@@ -52,8 +48,6 @@ export class AuthenticateStudentUseCase {
     const accessToken = await this.encrypter.encrypt({
       sub: student.id.toString(),
     })
-
-    console.log(accessToken)
 
     return right({
       accessToken,
