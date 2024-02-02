@@ -1,10 +1,8 @@
-import { BadRequestException, Controller, Get, Query, UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions'
 import { QuestionPresenter } from '../presenters/http-question-presenter'
-import { StudentAlreadyExistsError } from '@/domain/forum/application/use-cases/errors/student-already-exists-error'
 
 const pageQueryParamSchema = z
   .string()
@@ -26,17 +24,16 @@ export class FetchRecentQuestionsController {
   async handlePost(
     @Query('page', queryValidationPipe) page: PageQueryParamSchema,
   ) {
-
     const result = await this.fetchRecentQuestions.execute({
       page,
     })
 
     if (result.isLeft()) {
-      throw new BadRequestException();
+      throw new BadRequestException()
     }
 
     const questions = result.value.questions
 
-    return { questions:  questions.map(QuestionPresenter.toHTTP)}
+    return { questions: questions.map(QuestionPresenter.toHTTP) }
   }
 }

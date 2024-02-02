@@ -5,7 +5,6 @@ import { HashComparer } from '../cryptography/hash-comparer'
 import { Encrypter } from '../cryptography/encrypter'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
-
 interface AuthenticateStudentUseCaseRequest {
   email: string
   password: string
@@ -16,8 +15,7 @@ type AuthenticateStudentUseCaseResponse = Either<
   {
     accessToken: string
   }
-> 
-
+>
 @Injectable()
 export class AuthenticateStudentUseCase {
   constructor(

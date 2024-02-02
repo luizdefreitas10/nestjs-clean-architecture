@@ -8,7 +8,6 @@ export interface StudentProps {
 }
 
 export class Student extends Entity<StudentProps> {
-
   get name(): string {
     return this.props.name
   }
