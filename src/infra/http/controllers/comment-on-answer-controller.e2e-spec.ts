@@ -9,12 +9,13 @@ import { AnswerFactory } from 'test/factories/make-answer'
 import { QuestionFactory } from 'test/factories/make-question'
 import { StudentFactory } from 'test/factories/make-student'
 
-describe('Fetch question answers (E2E)', () => {
+describe('Comment on answer (E2E)', () => {
   let app: INestApplication
-  let jwt: JwtService
-  let studenFactory: StudentFactory
+  let prisma: PrismaService
+  let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
   let answerFactory: AnswerFactory
+  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -24,19 +25,17 @@ describe('Fetch question answers (E2E)', () => {
 
     app = moduleRef.createNestApplication()
 
-    jwt = moduleRef.get(JwtService)
-
-    studenFactory = moduleRef.get(StudentFactory)
-
+    prisma = moduleRef.get(PrismaService)
+    studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
-
     answerFactory = moduleRef.get(AnswerFactory)
+    jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
-  test('[GET] /questions/:questionId/answers', async () => {
-    const user = await studenFactory.makePrismaStudent()
+  test('[POST] /answers/:answersId/comments', async () => {
+    const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
@@ -44,34 +43,28 @@ describe('Fetch question answers (E2E)', () => {
       authorId: user.id,
     })
 
-    const questionId = question.id.toString()
+    const answer = await answerFactory.makePrismaAnswer({
+      questionId: question.id,
+      authorId: user.id,
+    })
 
-    await Promise.all([
-      answerFactory.makePrismaAnswer({
-        authorId: user.id,
-        questionId: question.id,
-        content: 'Answer 01',
-      }),
-      answerFactory.makePrismaAnswer({
-        authorId: user.id,
-        questionId: question.id,
-        content: 'Answer 02',
-      }),
-    ])
+    const answerId = answer.id.toString()
 
     const response = await request(app.getHttpServer())
-      .get(`/questions/${questionId}/answers`)
+      .post(`/answers/${answerId}/comments`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send()
+      .send({
+        content: 'New comment',
+      })
 
-    expect(response.statusCode).toBe(200)
-    expect(response.body).toEqual({
-      answers: expect.arrayContaining([
-        expect.objectContaining({ content: 'Answer 01' }),
-        expect.objectContaining({
-          content: 'Answer 02',
-        }),
-      ]),
+    expect(response.statusCode).toBe(201)
+
+    const commentOnDatabase = await prisma.comment.findFirst({
+      where: {
+        content: 'New comment',
+      },
     })
+
+    expect(commentOnDatabase).toBeTruthy()
   })
 })
