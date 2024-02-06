@@ -14,7 +14,6 @@ type DeleteQuestionCommentUseCaseResponse = Either<
   null
 >
 
-
 @Injectable()
 export class DeleteQuestionCommentUseCase {
   constructor(private questionCommentsRepository: QuestionCommentsRepository) {}

@@ -19,7 +19,6 @@ type CommentOnQuestionUseCaseResponse = Either<
   }
 >
 
-
 @Injectable()
 export class CommentOnQuestionUseCase {
   constructor(
