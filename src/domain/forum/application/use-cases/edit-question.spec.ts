@@ -129,9 +129,8 @@ describe('Edit Question', () => {
         }),
         expect.objectContaining({
           attachmentId: new UniqueEntityID('3'),
-        })
-      ])
+        }),
+      ]),
     )
   })
 })
-

@@ -18,6 +18,4 @@ export class PrismaAttachmentsRepository implements AttachmentsRepository {
       data,
     })
   }
-
-
 }

@@ -8,7 +8,6 @@ import { env } from 'process'
 import { randomUUID } from 'crypto'
 import { Injectable } from '@nestjs/common'
 
-
 @Injectable()
 export class R2Storage implements Uploader {
   private client: S3Client

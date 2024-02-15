@@ -9,11 +9,32 @@ export class PrismaQuestionAttachmentsRepository
   implements QuestionAttachmentsRepository
 {
   constructor(private prisma: PrismaService) {}
-  createMany(attachments: QuestionAttachment[]): Promise<void> {
-    throw new Error('Method not implemented.')
+  async createMany(attachments: QuestionAttachment[]): Promise<void> {
+    if (attachments.length === 0) {
+      return
+    }
+
+    const data = PrismaQuestionAttachmentMapper.toPrisma(attachments)
+
+    await this.prisma.attachment.updateMany(data)
   }
-  deleteMany(attachments: QuestionAttachment[]): Promise<void> {
-    throw new Error('Method not implemented.')
+
+  async deleteMany(attachments: QuestionAttachment[]): Promise<void> {
+    if (attachments.length === 0) {
+      return
+    }
+
+    const attachmentsIds = attachments.map((attachment) => {
+      return attachment.id.toString()
+    })
+
+    await this.prisma.attachment.deleteMany({
+      where: {
+        id: {
+          in: attachmentsIds,
+        },
+      },
+    })
   }
 
   async findManyByQuestionId(
