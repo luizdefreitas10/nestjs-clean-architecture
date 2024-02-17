@@ -48,7 +48,7 @@ export class InMemoryAnswersRepository implements AnswersRepository {
       answer.attachments.getNewItems(),
     )
 
-    await this.answerAttachmentsRepository.createMany(
+    await this.answerAttachmentsRepository.deleteMany(
       answer.attachments.getRemovedItems(),
     )
 
